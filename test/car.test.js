@@ -290,4 +290,90 @@ describe("Test car API", () => {
       response.body.message.should.be.eq(HTTP_RESPONSES.notFound.message);
     });
   });
+
+  describe("GET /cars/search", () => {
+    it("Should search one car with the same vin", async () => {
+      const car = await Car.findOne();
+      const response = await chai
+        .request(serverUri)
+        .get(`/cars/search?where={"vin":"${car.vin}" }`);
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(1);
+      response.body.data[0].vin.should.be.eq(car.vin);
+    });
+    it("Should search cars with the same color", async () => {
+      const cars = await Car.findAll({ where: { color: "Blue" } });
+      const response = await chai
+        .request(serverUri)
+        .get(`/cars/search?where={"color":"${cars[0].color}" }`);
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(cars.length);
+    });
+    it("Should search cars with the same model", async () => {
+      const cars = await Car.findAll({ where: { model: 2008 } });
+      const response = await chai
+        .request(serverUri)
+        .get(`/cars/search?where={"model":"${cars[0].model}" }`);
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(cars.length);
+    });
+    it("Should search cars with the same make", async () => {
+      const cars = await Car.findAll({ where: { make: "Dodge" } });
+      const response = await chai
+        .request(serverUri)
+        .get(`/cars/search?where={"make":"${cars[0].make}" }`);
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(cars.length);
+    });
+    it("Should search cars with the same state", async () => {
+      const cars = await Car.findAll({ where: { state: "California" } });
+      const response = await chai
+        .request(serverUri)
+        .get(`/cars/search?where={"state":"${cars[0].state}" }`);
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(cars.length);
+    });
+    it("Should search cars with the same 2 properties", async () => {
+      const cars = await Car.findAll({
+        where: { state: "Nevada", make: "Honda" },
+      });
+      const response = await chai
+        .request(serverUri)
+        .get(
+          `/cars/search?where={"state":"${cars[0].state}", "make":"${cars[0].make}" }`
+        );
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(cars.length);
+    });
+    it("Should search cars with the same 3 properties", async () => {
+      const cars = await Car.findAll({
+        where: { state: "Nevada", make: "Honda", model: 2005 },
+      });
+      const response = await chai
+        .request(serverUri)
+        .get(
+          `/cars/search?where={"state":"${cars[0].state}", "make":"${cars[0].make}", "model":"${cars[0].model}" }`
+        );
+
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.data.should.be.a("array");
+      response.body.data.length.should.be.eq(cars.length);
+    });
+  });
+
+  after(() => {
+    setTimeout(() => process.exit(0), 2000);
+  });
 });
