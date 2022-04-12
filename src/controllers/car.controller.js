@@ -1,4 +1,5 @@
 const { Car } = require("../models/Car");
+const { HTTP_RESPONSES } = require("../utils/controller.utils");
 
 const carController = {};
 
@@ -17,19 +18,27 @@ carController.searchCars = async (request, h) => {
     const cars = await Car.findAll({
       where,
     });
-    return h.response({ message: "Ok", data: cars }).code(200);
+    return h
+      .response({ message: HTTP_RESPONSES.ok.message, data: cars })
+      .code(HTTP_RESPONSES.ok.code);
   } catch (error) {
     console.log(error);
-    return h.response({ message: "Internal server error" }).code(500);
+    return h
+      .response({ message: HTTP_RESPONSES.serverError.message })
+      .code(HTTP_RESPONSES.serverError.code);
   }
 };
 
 carController.getCars = async (request, h) => {
   try {
     const cars = await Car.findAll();
-    return h.response({ message: "Ok", data: cars }).code(200);
+    return h
+      .response({ message: HTTP_RESPONSES.ok.message, data: cars })
+      .code(HTTP_RESPONSES.ok.code);
   } catch (error) {
-    return h.response({ message: "Internal server error" }).code(500);
+    return h
+      .response({ message: HTTP_RESPONSES.serverError.message })
+      .code(HTTP_RESPONSES.serverError.code);
   }
 };
 
@@ -39,12 +48,18 @@ carController.getCar = async (request, h) => {
     const car = await Car.findByPk(id);
 
     if (!car) {
-      return h.response({ message: "car not found" }).code(404);
+      return h
+        .response({ message: HTTP_RESPONSES.notFound.message })
+        .code(HTTP_RESPONSES.notFound.code);
     }
 
-    return h.response({ message: "Ok", data: car }).code(200);
+    return h
+      .response({ message: HTTP_RESPONSES.ok.message, data: car })
+      .code(HTTP_RESPONSES.ok.code);
   } catch (error) {
-    return h.response({ message: "Internal server error" }).code(500);
+    return h
+      .response({ message: HTTP_RESPONSES.serverError.message })
+      .code(HTTP_RESPONSES.serverError.code);
   }
 };
 
@@ -52,9 +67,13 @@ carController.createCar = async (request, h) => {
   const { vin, model, make, color, state } = request.payload;
   try {
     const car = await Car.create({ vin, model, make, color, state });
-    return h.response({ message: "Created", data: car }).code(201);
+    return h
+      .response({ message: HTTP_RESPONSES.created.message, data: car })
+      .code(HTTP_RESPONSES.created.code);
   } catch (error) {
-    return h.response({ message: "Internal server error" }).code(500);
+    return h
+      .response({ message: HTTP_RESPONSES.serverError.message })
+      .code(HTTP_RESPONSES.serverError.code);
   }
 };
 
@@ -65,14 +84,20 @@ carController.updateCar = async (request, h) => {
 
     const car = await Car.findByPk(id);
     if (!car) {
-      return h.response({ message: "car not found" }).code(404);
+      return h
+        .response({ message: HTTP_RESPONSES.notFound.message })
+        .code(HTTP_RESPONSES.notFound.code);
     }
 
     await car.update({ vin, model, make, color, state });
 
-    return h.response({ message: "Updated", data: car }).code(200);
+    return h
+      .response({ message: "Updated", data: car })
+      .code(HTTP_RESPONSES.ok.code);
   } catch (error) {
-    return h.response({ message: "Internal server error" }).code(500);
+    return h
+      .response({ message: HTTP_RESPONSES.serverError.message })
+      .code(HTTP_RESPONSES.serverError.code);
   }
 };
 
@@ -82,14 +107,18 @@ carController.deleteCar = async (request, h) => {
 
     const car = await Car.findByPk(id);
     if (!car) {
-      return h.response({ message: "car not found" }).code(404);
+      return h
+        .response({ message: HTTP_RESPONSES.notFound.message })
+        .code(HTTP_RESPONSES.notFound.code);
     }
 
     await car.destroy();
 
-    return h.response({ message: "Deleted" }).code(200);
+    return h.response({ message: "Deleted" }).code(HTTP_RESPONSES.ok.code);
   } catch (error) {
-    return h.response({ message: "Internal server error" }).code(500);
+    return h
+      .response({ message: HTTP_RESPONSES.serverError.message })
+      .code(HTTP_RESPONSES.serverError.code);
   }
 };
 

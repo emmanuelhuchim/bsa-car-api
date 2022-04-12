@@ -12,6 +12,7 @@ const {
   createTestDB,
 } = require("../src/helpers/migrations.helper");
 const { Car } = require("../src/models/Car");
+const { HTTP_RESPONSES } = require("../src/utils/controller.utils");
 
 const serverUri = `http://${process.env.HOST || "localhost"}:${
   process.env.PORT || 3000
@@ -38,8 +39,8 @@ describe("Test car API", () => {
     it("Should GET all the cars", async () => {
       const response = await chai.request(serverUri).get("/cars");
 
-      response.should.have.status(200);
-      response.body.message.should.be.eq("Ok");
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.ok.message);
       response.body.data.should.be.a("array");
       response.body.data.length.should.be.eq(1000);
     });
@@ -50,8 +51,8 @@ describe("Test car API", () => {
       const car = await Car.findOne();
       const response = await chai.request(serverUri).get(`/cars/${car.id}`);
 
-      response.should.have.status(200);
-      response.body.message.should.be.eq("Ok");
+      response.should.have.status(HTTP_RESPONSES.ok.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.ok.message);
       response.body.data.should.be.a("object");
       response.body.data.id.should.be.eq(car.id);
       response.body.data.vin.should.be.eq(car.vin);
@@ -64,15 +65,15 @@ describe("Test car API", () => {
     it("Should not find a car", async () => {
       const response = await chai.request(serverUri).get(`/cars/${0}`);
 
-      response.should.have.status(404);
-      response.body.message.should.be.eq("car not found");
+      response.should.have.status(HTTP_RESPONSES.notFound.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.notFound.message);
     });
 
     it("Should fail the search", async () => {
       const response = await chai.request(serverUri).get(`/cars/${undefined}`);
 
-      response.should.have.status(500);
-      response.body.message.should.be.eq("Internal server error");
+      response.should.have.status(HTTP_RESPONSES.serverError.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.serverError.message);
     });
   });
 
@@ -91,8 +92,8 @@ describe("Test car API", () => {
         .post("/cars")
         .send(payload);
 
-      response.should.have.status(201);
-      response.body.message.should.be.eq("Created");
+      response.should.have.status(HTTP_RESPONSES.created.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.created.message);
       response.body.data.should.be.a("object");
       response.body.data.vin.should.be.eq(payload.vin);
       response.body.data.model.should.be.eq(payload.model);
@@ -115,8 +116,8 @@ describe("Test car API", () => {
         .post("/cars")
         .send(payload);
 
-      response.should.have.status(500);
-      response.body.message.should.be.eq("Internal server error");
+      response.should.have.status(HTTP_RESPONSES.serverError.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.serverError.message);
     });
 
     it("Should fail the new record creation because no vin", async () => {
@@ -212,7 +213,7 @@ describe("Test car API", () => {
         .put(`/cars/${car.id}`)
         .send(payload);
 
-      response.should.have.status(200);
+      response.should.have.status(HTTP_RESPONSES.ok.code);
       response.body.message.should.be.eq("Updated");
       response.body.data.should.be.a("object");
       response.body.data.color.should.be.eq(payload.color);
@@ -231,7 +232,7 @@ describe("Test car API", () => {
         .put(`/cars/${car.id}`)
         .send(payload);
 
-      response.should.have.status(200);
+      response.should.have.status(HTTP_RESPONSES.ok.code);
       response.body.message.should.be.eq("Updated");
       response.body.data.should.be.a("object");
       response.body.data.vin.should.be.eq(payload.vin);
@@ -251,8 +252,8 @@ describe("Test car API", () => {
         .put(`/cars/${cars[1].id}`)
         .send(payload);
 
-      response.should.have.status(500);
-      response.body.message.should.be.eq("Internal server error");
+      response.should.have.status(HTTP_RESPONSES.serverError.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.serverError.message);
     });
     it("Should not find a car", async () => {
       const payload = {
@@ -263,8 +264,8 @@ describe("Test car API", () => {
         .put(`/cars/${0}`)
         .send(payload);
 
-      response.should.have.status(404);
-      response.body.message.should.be.eq("car not found");
+      response.should.have.status(HTTP_RESPONSES.notFound.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.notFound.message);
     });
     it("Should fail because no payload", async () => {
       const car = await Car.findOne();
@@ -279,14 +280,14 @@ describe("Test car API", () => {
       const car = await Car.findOne();
       const response = await chai.request(serverUri).delete(`/cars/${car.id}`);
 
-      response.should.have.status(200);
+      response.should.have.status(HTTP_RESPONSES.ok.code);
       response.body.message.should.be.eq("Deleted");
     });
     it("Should not find a car", async () => {
       const response = await chai.request(serverUri).delete(`/cars/${0}`);
 
-      response.should.have.status(404);
-      response.body.message.should.be.eq("car not found");
+      response.should.have.status(HTTP_RESPONSES.notFound.code);
+      response.body.message.should.be.eq(HTTP_RESPONSES.notFound.message);
     });
   });
 });
