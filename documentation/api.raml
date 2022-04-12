@@ -88,6 +88,54 @@ documentation:
                 {
                     "message": "Internal server error"
                 }
+  /search:
+    description: search endpoint 
+    get:
+      description: Get the matches with the where filter
+      queryParameters:
+        where:
+          properties: 
+            vin?: string
+            model?: integer
+            make?: string
+            color?: string
+            state?: string
+          required: false 
+      responses:
+        200:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                  "message": "Ok",
+                  "data": [
+                      {
+                          "id": 1,
+                          "vin": "5UXKR2C54E0801358",
+                          "model": 1992,
+                          "make": "GMC",
+                          "color": "Turquoise",
+                          "state": "Arizona"
+                      },
+                      {
+                          "id": 2,
+                          "vin": "WAUKH98E18A515694",
+                          "model": 2008,
+                          "make": "Chevrolet",
+                          "color": "Goldenrod",
+                          "state": "Maryland"
+                      }
+                  ]
+                }
+        500:
+            body:
+              application/json:
+                type: "Object"
+                example: |
+                  {
+                      "message": "Internal server error"
+                  }
   /{id}:
     uriParameters:
       id:
