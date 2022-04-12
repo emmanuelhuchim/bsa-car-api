@@ -1,6 +1,7 @@
 const { carController } = require("../controllers/car.controller");
 const { failAction } = require("../validators/general.validator");
 const {
+  carSearchValidator,
   carCreateValidator,
   carUpdateValidator,
 } = require("../validators/Car.validator");
@@ -8,6 +9,13 @@ const {
 const endpointBase = "cars";
 
 module.exports = (server) => {
+  server.route({
+    method: "GET",
+    path: `/${endpointBase}/search`,
+    options: { validate: { ...carSearchValidator, failAction } },
+    handler: carController.searchCars,
+  });
+
   server.route({
     method: "GET",
     path: `/${endpointBase}`,

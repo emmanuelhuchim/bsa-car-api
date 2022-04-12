@@ -20,6 +20,18 @@ const carUpdateValidator = {
   }),
 };
 
+const carSearchValidator = {
+  query: Joi.object({
+    where: Joi.object({
+      vin: Joi.string().optional(),
+      model: Joi.number().optional(),
+      make: Joi.string().optional(),
+      color: Joi.string().optional(),
+      state: Joi.string().optional(),
+    }).optional(),
+  }),
+};
+
 module.exports = {
   carCreateValidator,
   carUpdateValidator,

@@ -2,6 +2,28 @@ const { Car } = require("../models/Car");
 
 const carController = {};
 
+carController.searchCars = async (request, h) => {
+  try {
+    const { vin, model, make, color, state } = JSON.parse(
+      request.query.where || "{}"
+    );
+
+    // only car attributes specified
+    const where = { vin, model, make, color, state };
+    Object.keys(where).forEach((key) =>
+      where[key] === undefined ? delete where[key] : {}
+    );
+
+    const cars = await Car.findAll({
+      where,
+    });
+    return h.response({ message: "Ok", data: cars }).code(200);
+  } catch (error) {
+    console.log(error);
+    return h.response({ message: "Internal server error" }).code(500);
+  }
+};
+
 carController.getCars = async (request, h) => {
   try {
     const cars = await Car.findAll();
