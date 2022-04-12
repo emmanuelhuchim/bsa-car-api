@@ -15,6 +15,11 @@ carController.getCar = async (request, h) => {
   try {
     const { id } = request.params;
     const car = await Car.findByPk(id);
+
+    if (!car) {
+      return h.response({ message: "car not found" }).code(404);
+    }
+
     return h.response({ message: "Ok", data: car }).code(200);
   } catch (error) {
     return h.response({ message: "Internal server error" }).code(500);
