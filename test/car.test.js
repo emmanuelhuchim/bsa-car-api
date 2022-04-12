@@ -100,10 +100,193 @@ describe("Test car API", () => {
       response.body.data.color.should.be.eq(payload.color);
       response.body.data.state.should.be.eq(payload.state);
     });
+
+    it("Should fail the new record creation", async () => {
+      const payload = {
+        vin: "1NXBE4EE5AZ031111",
+        model: 2010,
+        make: "Ford",
+        color: "Orange",
+        state: "Georgia",
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .post("/cars")
+        .send(payload);
+
+      response.should.have.status(500);
+      response.body.message.should.be.eq("Internal server error");
+    });
+
+    it("Should fail the new record creation because no vin", async () => {
+      const payload = {
+        model: 2010,
+        make: "Ford",
+        color: "Orange",
+        state: "Georgia",
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .post("/cars")
+        .send(payload);
+
+      response.should.have.status(400);
+      response.body.message.should.be.eq(`\"vin\" is required`);
+    });
+    it("Should fail the new record creation because no model", async () => {
+      const payload = {
+        vin: "1NXBE4EE5AZ031111",
+        make: "Ford",
+        color: "Orange",
+        state: "Georgia",
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .post("/cars")
+        .send(payload);
+
+      response.should.have.status(400);
+      response.body.message.should.be.eq(`\"model\" is required`);
+    });
+    it("Should fail the new record creation because no make", async () => {
+      const payload = {
+        vin: "1NXBE4EE5AZ031111",
+        model: 2010,
+        color: "Orange",
+        state: "Georgia",
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .post("/cars")
+        .send(payload);
+
+      response.should.have.status(400);
+      response.body.message.should.be.eq(`\"make\" is required`);
+    });
+    it("Should fail the new record creation because no color", async () => {
+      const payload = {
+        vin: "1NXBE4EE5AZ031111",
+        model: 2010,
+        make: "Ford",
+        state: "Georgia",
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .post("/cars")
+        .send(payload);
+
+      response.should.have.status(400);
+      response.body.message.should.be.eq(`\"color\" is required`);
+    });
+    it("Should fail the new record creation because no state", async () => {
+      const payload = {
+        vin: "1NXBE4EE5AZ031111",
+        model: 2010,
+        make: "Ford",
+        color: "Orange",
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .post("/cars")
+        .send(payload);
+
+      response.should.have.status(400);
+      response.body.message.should.be.eq(`\"state\" is required`);
+    });
   });
 
-  // GET /cars/{id}
-  // POST /cars
-  // PUT /cars/{id}
-  // DELETE /cars/{id}
+  describe("PUT /cars", () => {
+    it("Should update one car with new color", async () => {
+      const payload = {
+        color: "black",
+      };
+      const car = await Car.findOne();
+      const response = await chai
+        .request(serverUri)
+        .put(`/cars/${car.id}`)
+        .send(payload);
+
+      response.should.have.status(200);
+      response.body.message.should.be.eq("Updated");
+      response.body.data.should.be.a("object");
+      response.body.data.color.should.be.eq(payload.color);
+    });
+    it("Should update one car with all properties", async () => {
+      const car = await Car.findOne();
+      const payload = {
+        vin: car.vin,
+        model: car.model,
+        make: car.make,
+        color: car.color,
+        state: car.state,
+      };
+      const response = await chai
+        .request(serverUri)
+        .put(`/cars/${car.id}`)
+        .send(payload);
+
+      response.should.have.status(200);
+      response.body.message.should.be.eq("Updated");
+      response.body.data.should.be.a("object");
+      response.body.data.vin.should.be.eq(payload.vin);
+      response.body.data.model.should.be.eq(payload.model);
+      response.body.data.make.should.be.eq(payload.make);
+      response.body.data.color.should.be.eq(payload.color);
+      response.body.data.state.should.be.eq(payload.state);
+    });
+    it("Should fail update because same vin", async () => {
+      const cars = await Car.findAll({ limit: 2 });
+      const payload = {
+        vin: cars[0].vin,
+      };
+
+      const response = await chai
+        .request(serverUri)
+        .put(`/cars/${cars[1].id}`)
+        .send(payload);
+
+      response.should.have.status(500);
+      response.body.message.should.be.eq("Internal server error");
+    });
+    it("Should not find a car", async () => {
+      const payload = {
+        color: "Black",
+      };
+      const response = await chai
+        .request(serverUri)
+        .put(`/cars/${0}`)
+        .send(payload);
+
+      response.should.have.status(404);
+      response.body.message.should.be.eq("car not found");
+    });
+    it("Should fail because no payload", async () => {
+      const car = await Car.findOne();
+      const response = await chai.request(serverUri).put(`/cars/${car.id}`);
+
+      response.should.have.status(400);
+    });
+  });
+
+  describe("DELETE /cars", () => {
+    it("Should delete one car", async () => {
+      const car = await Car.findOne();
+      const response = await chai.request(serverUri).delete(`/cars/${car.id}`);
+
+      response.should.have.status(200);
+      response.body.message.should.be.eq("Deleted");
+    });
+    it("Should not find a car", async () => {
+      const response = await chai.request(serverUri).delete(`/cars/${0}`);
+
+      response.should.have.status(404);
+      response.body.message.should.be.eq("car not found");
+    });
+  });
 });
