@@ -1,0 +1,206 @@
+#%RAML 1.0
+title: Car API
+version: 1.0.0
+baseUri: http://localhost:8888
+documentation:
+  - title: Description
+    content: |
+      This is a basic documentation for the cars API, my exercise solution for BSA interview
+  - title: Requirements
+    content: |
+      Please read the **README.md** file for the API set up.
+/cars: 
+  description: endpoint to access to cars information
+
+  get:
+    description: Get a list of cars.
+    responses:
+      200:
+        body:
+          application/json:
+            type: "Object"
+            example: |
+              {
+                "message": "Ok",
+                "data": [
+                    {
+                        "id": 1,
+                        "vin": "5UXKR2C54E0801358",
+                        "model": 1992,
+                        "make": "GMC",
+                        "color": "Turquoise",
+                        "state": "Arizona"
+                    },
+                    {
+                        "id": 2,
+                        "vin": "WAUKH98E18A515694",
+                        "model": 2008,
+                        "make": "Chevrolet",
+                        "color": "Goldenrod",
+                        "state": "Maryland"
+                    }
+                ]
+              }
+      500:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "Internal server error"
+                }
+  post:
+      description: modify a car.
+      body:
+        application/json:
+          example: |
+            {
+                    "id": 1,
+                    "vin": "5UXKR2C54E0801358",
+                    "model": 1992,
+                    "make": "GMC",
+                    "color": "Turquoise",
+                    "state": "Arizona"
+            }
+      responses:
+        201:
+            body:
+                application/json:
+                    type: "Object"
+                    example: |
+                      {
+                         "message": "Created",
+                         "data": 
+                            {
+                               "id": 1,
+                               "vin": "5UXKR2C54E0801358",
+                               "model": 1992,
+                               "make": "GMC",
+                               "color": "Turquoise",
+                               "state": "Arizona"
+                            }
+                      }
+        500:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "Internal server error"
+                }
+  /{id}:
+    uriParameters:
+      id:
+        type: string
+        description: Car identifier
+
+    get:
+      description: Get a car by id.
+      responses:
+        200:
+            body:
+                application/json:
+                    type: "Object"
+                    example: |
+                      {
+                        "message": "Ok",
+                        "data": 
+                           {
+                             "id": 1,
+                             "vin": "5UXKR2C54E0801358",
+                             "model": 1992,
+                             "make": "GMC",
+                             "color": "Turquoise",
+                             "state": "Arizona"
+                           }
+                      }
+        404:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "car not found"
+                }
+        500:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "Internal server error"
+                }    
+    put:
+      description: modify a car.
+      body:
+        application/json:
+          example: |
+            {
+                    "id": 1,
+                    "vin": "5UXKR2C54E0801358",
+                    "model": 1992,
+                    "make": "GMC",
+                    "color": "Turquoise",
+                    "state": "Arizona"
+            }
+      responses:
+        200:
+            body:
+                application/json:
+                    type: "Object"
+                    example: |
+                      {
+                         "message": "Updated",
+                         "data": 
+                            {
+                               "id": 1,
+                               "vin": "5UXKR2C54E0801358",
+                               "model": 1992,
+                               "make": "GMC",
+                               "color": "Turquoise",
+                               "state": "Arizona"
+                            }
+                      }
+        404:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "car not found"
+                }
+        500:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "Internal server error"
+                }
+    delete: 
+      description: delete a car by id.
+      responses:
+        200:
+            body:
+                application/json:
+                    type: "Object"
+                    example: |
+                      {
+                         "message": "Deleted"
+                      }
+        404:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "car not found"
+                }
+        500:
+          body:
+            application/json:
+              type: "Object"
+              example: |
+                {
+                    "message": "Internal server error"
+                }  
