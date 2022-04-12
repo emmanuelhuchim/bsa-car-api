@@ -12,12 +12,12 @@ API that contains the resources for the cars app. You can read the documentation
 
 ### Step 1: Set up the environment
 
-1. Create a new file with the name .env then update the variables with your db credentials (use the same name for database)
+1. Create a new file with the name .env then update the variables with your db credentials
 
-2. Run the following command for create migrations and seeders:
+2. Install packages with the following command:
 
 ```
-npm run setup
+npm install
 ```
 
 3. Run the following command for test:
@@ -30,4 +30,8 @@ npm test
 
 ```
 npm run start
+```
+or
+```
+npm run dev
 ```
