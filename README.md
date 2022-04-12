@@ -2,7 +2,7 @@
 
 ## Description
 
-API that contains the resources for the cars app. For further information see de api description in [documentation](Documentation)
+API that contains the resources for the cars app. For further information see de api description in [/documentation](Documentation)
 
 ## Requirements
 
